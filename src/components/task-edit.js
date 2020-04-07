@@ -1,21 +1,8 @@
-// Добавил блок card__conyrol стр9-18 из демки, изначально не было
-// возможно не нужна эта разметка, проверить и удалить
 export const createTaskEditTemplate = () => {
   return (
     `<article class="card card--edit card--yellow card--repeat">
       <form class="card__form" method="get">
         <div class="card__inner">
-
-          <div class="card__control">
-            <button type="button" class="card__btn card__btn--archive">
-              archive
-            </button>
-            <button
-              type="button"
-              class="card__btn card__btn--favorites card__btn--disabled">
-              favorites
-            </button>
-          </div>
 
           <div class="card__color-bar">
             <svg class="card__color-bar-wave" width="100%" height="10">
