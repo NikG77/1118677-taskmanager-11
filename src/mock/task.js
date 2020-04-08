@@ -1,11 +1,21 @@
+const DefaultRepeatingDays = {
+  "mo": false,
+  "tu": false,
+  "we": false,
+  "th": false,
+  "fr": false,
+  "sa": false,
+  "su": false,
+};
+
 const generateTask = () => {
   return {
     description: `Example default task with default color.`,
-    dueDate: new Date(),
-    repeatingDays: null,
+    dueDate: Math.random() > 0.5 ? new Date() : null,
+    repeatingDays: Object.assign({}, DefaultRepeatingDays, {"mo": Math.random() > 0.5}),
     color: `pink`,
-    isArchive: true,
-    isFavorite: false
+    isArchive: Math.random() > 0.5,
+    isFavorite: Math.random() > 0.5,
   };
 };
 
