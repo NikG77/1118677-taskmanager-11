@@ -70,7 +70,6 @@ const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
 const filters = generateFilters();
 const tasks = generateTasks(TASK_COUNT);
-Пер
 
 render(siteHeaderElement, new SiteMenuComponent().getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
