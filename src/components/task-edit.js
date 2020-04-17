@@ -1,6 +1,6 @@
+import AbstractComponent from "./abstract-component.js";
 import {COLORS, DAYS, MONTH_NAMES} from "../const.js";
-import {createElement, formatTime} from "../utils.js";
-
+import {formatTime} from "../utils/common.js";
 
 const createColorsMarkup = (colors, currentColor) => {
   return colors
@@ -45,7 +45,6 @@ const createRepetingDaysMarkup = (days, repeatingDays) => {
     .join(`\n`);
 };
 
-
 export const createTaskEditTemplate = (task) => {
   const {description, dueDate, color, repeatingDays} = task;
 
@@ -66,7 +65,6 @@ export const createTaskEditTemplate = (task) => {
     `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
       <form class="card__form" method="get">
         <div class="card__inner">
-
           <div class="card__color-bar">
             <svg class="card__color-bar-wave" width="100%" height="10">
               <use xlink:href="#wave"></use>
@@ -132,26 +130,19 @@ export const createTaskEditTemplate = (task) => {
   );
 };
 
-
-export default class TaskEdit {
+export default class TaskEdit extends AbstractComponent {
   constructor(task) {
+    super();
+
     this._task = task;
-    this._element = null;
   }
 
   getTemplate() {
     return createTaskEditTemplate(this._task);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
   }
 }
