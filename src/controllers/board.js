@@ -6,9 +6,10 @@ import TaskEditComponent from "../components/task-edit.js";
 import TasksComponent from "../components/tasks.js";
 import {render, remove, replace, RenderPosition} from "../utils/render.js";
 
-
-const SHOWING_TASKS_COUNT_ON_START = 8;
-const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
+const ShowingTasksCount = {
+  ON_START: 8,
+  BY_BUTTON: 8
+};
 
 const renderTask = (taskListElement, task) => {
   const replaceTaskToEdit = () => {
@@ -91,7 +92,7 @@ export default class BoardController {
 
       this._loadMoreButtonComponent.setClickHandler(() => {
         const prevTasksCount = showingTasksCount;
-        showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+        showingTasksCount = showingTasksCount + ShowingTasksCount.BY_BUTTON;
 
         const sortedTasks = getSortedTasks(tasks, this._sortComponent.getSortType(), prevTasksCount, showingTasksCount);
         renderTasks(taskListElement, sortedTasks);
@@ -116,13 +117,13 @@ export default class BoardController {
 
     const taskListElement = this._tasksComponent.getElement();
 
-    let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
+    let showingTasksCount = ShowingTasksCount.ON_START;
 
     renderTasks(taskListElement, tasks.slice(0, showingTasksCount));
     renderLoadMoreButton();
 
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
-      showingTasksCount = SHOWING_TASKS_COUNT_BY_BUTTON;
+      showingTasksCount = ShowingTasksCount.BY_BUTTON;
 
       const sortedTasks = getSortedTasks(tasks, sortType, 0, showingTasksCount);
 
