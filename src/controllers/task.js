@@ -27,7 +27,7 @@ export default class TaskContoller {
       this._replaceEditToTask();
     });
 
-    render(this._taskListElement, this._taskComponent, RenderPosition.BEFOREEND);
+    render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
   }
 
 
