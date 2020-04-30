@@ -8,24 +8,22 @@ export const Mode = {
 };
 
 export const EmptyTask = {};
-
 export default class TaskContoller {
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
-
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
-
     this._taskComponent = null;
     this._taskEditComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-
   }
-  render(task) {
+
+  render(task, mode) {
     const oldTaskComponent = this._taskComponent;
     const oldTaskEditComponent = this._taskEditComponent;
+    this._mode = mode;
 
     this._taskComponent = new TaskComponent(task);
     this._taskEditComponent = new TaskEditComponent(task);
@@ -33,11 +31,6 @@ export default class TaskContoller {
     this._taskComponent.setEditButtonClickHandler(() => {
       this._replaceTaskToEdit();
       document.addEventListener(`keydown`, this._onEscKeyDown);
-    });
-
-    this._taskEditComponent.setSubmitHandler((evt) => {
-      evt.preventDefault();
-      this._replaceEditToTask();
     });
 
     this._taskComponent.setArchiveButtonClickHandler(() => {
@@ -52,10 +45,18 @@ export default class TaskContoller {
       }));
     });
 
+    this._taskEditComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      const data = this._taskEditComponent.getData();
+      this._onDataChange(this, task, data);
+    });
+
+    this._taskEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, task, null));
 
     if (oldTaskEditComponent && oldTaskComponent) {
       replace(this._taskComponent, oldTaskComponent);
       replace(this._taskEditComponent, oldTaskEditComponent);
+      this._replaceEditToTask();
     } else {
       render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
     }
@@ -76,7 +77,11 @@ export default class TaskContoller {
   _replaceEditToTask() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._taskEditComponent.reset();
-    replace(this._taskComponent, this._taskEditComponent);
+
+    if (document.contains(this._taskEditComponent.getElement())) {
+      replace(this._taskComponent, this._taskEditComponent);
+    }
+
     this._mode = Mode.DEFAULT;
   }
 
@@ -85,7 +90,6 @@ export default class TaskContoller {
     replace(this._taskEditComponent, this._taskComponent);
     this._mode = Mode.EDIT;
   }
-
 
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
