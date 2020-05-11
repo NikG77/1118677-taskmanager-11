@@ -6,14 +6,16 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import {encode} from "he";
 
-const MIN_DESCRIPTION_LENGTH = 1;
-const MAX_DESCRIPTION_LENGTH = 140;
+const DescriptionLength = {
+  MIN: 1,
+  MAX: 140,
+};
 
 const isAllowableDescriptionLength = (description) => {
   const length = description.length;
 
-  return length >= MIN_DESCRIPTION_LENGTH &&
-    length <= MAX_DESCRIPTION_LENGTH;
+  return length >= DescriptionLength.MIN &&
+    length <= DescriptionLength.MAX;
 };
 
 const createColorsMarkup = (colors, currentColor) => {
