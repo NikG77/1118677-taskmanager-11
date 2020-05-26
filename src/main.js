@@ -1,34 +1,14 @@
+import API from "./api.js";
 import BoardComponent from "./components/board.js";
-import BoardController from "./controllers/board";
-import FilterController from "./controllers/filter";
+import BoardController from "./controllers/board.js";
+import FilterController from "./controllers/filter.js";
 import SiteMenuComponent, {MenuItem} from "./components/site-menu.js";
-import {generateTasks} from "./mock/task.js";
+import StatisticsComponent from "./components/statistics.js";
+import TasksModel from "./models/tasks.js";
 import {render, RenderPosition} from "./utils/render.js";
-import TasksModel from "./models/tasks";
-import StatisticsComponent from "./components/statistics";
-import {SortType} from "./components/sort";
 
-
-const TASK_COUNT = 22;
-
-const siteMainElement = document.querySelector(`.main`);
-const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
-const siteMenuComponent = new SiteMenuComponent();
-
-render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
-
-const tasks = generateTasks(TASK_COUNT);
-const tasksModel = new TasksModel();
-tasksModel.setTasks(tasks);
-
-const filterController = new FilterController(siteMainElement, tasksModel);
-filterController.render();
-
-const boardComponent = new BoardComponent();
-render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
-
-const boardController = new BoardController(boardComponent, tasksModel);
-boardController.render(tasks);
+const AUTHORIZATION = `Basic dXNlckBwY456s29yZAo=`;
+const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
 
 const dateTo = new Date();
 const dateFrom = (() => {
@@ -36,7 +16,22 @@ const dateFrom = (() => {
   d.setDate(d.getDate() - 7);
   return d;
 })();
+
+const api = new API(END_POINT, AUTHORIZATION);
+const tasksModel = new TasksModel();
+
+const siteMainElement = document.querySelector(`.main`);
+const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
+const siteMenuComponent = new SiteMenuComponent();
 const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
+
+const boardComponent = new BoardComponent();
+const boardController = new BoardController(boardComponent, tasksModel, api);
+const filterController = new FilterController(siteMainElement, tasksModel);
+
+render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
+filterController.render();
+render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
@@ -46,7 +41,6 @@ siteMenuComponent.setOnChange((menuItem) => {
       siteMenuComponent.setActiveItem(MenuItem.TASKS);
       statisticsComponent.hide();
       boardController.show();
-      boardController.onSortTypeChange(SortType.DEFAULT);
       boardController.createTask();
       break;
     case MenuItem.STATISTICS:
@@ -56,7 +50,12 @@ siteMenuComponent.setOnChange((menuItem) => {
     case MenuItem.TASKS:
       statisticsComponent.hide();
       boardController.show();
-      boardController.onSortTypeChange(SortType.DEFAULT);
       break;
   }
 });
+
+api.getTasks()
+  .then((tasks) => {
+    tasksModel.setTasks(tasks);
+    boardController.render();
+  });
