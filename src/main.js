@@ -1,15 +1,13 @@
 import API from "./api.js";
 import BoardComponent from "./components/board.js";
-import BoardController from "./controllers/board";
-import FilterController from "./controllers/filter";
+import BoardController from "./controllers/board.js";
+import FilterController from "./controllers/filter.js";
 import SiteMenuComponent, {MenuItem} from "./components/site-menu.js";
-import StatisticsComponent from "./components/statistics";
-import TasksModel from "./models/tasks";
-
+import StatisticsComponent from "./components/statistics.js";
+import TasksModel from "./models/tasks.js";
 import {render, RenderPosition} from "./utils/render.js";
-import {SortType} from "./components/sort";
 
-const AUTHORIZATION = `Basic dXNlckBwYX529yZAo=`;
+const AUTHORIZATION = `Basic dXNlckBwYXNпше29yZAo=`;
 const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
 
 const dateTo = new Date();
@@ -34,7 +32,6 @@ const filterController = new FilterController(siteMainElement, tasksModel);
 render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
 filterController.render();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
-
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
@@ -44,7 +41,6 @@ siteMenuComponent.setOnChange((menuItem) => {
       siteMenuComponent.setActiveItem(MenuItem.TASKS);
       statisticsComponent.hide();
       boardController.show();
-      boardController.onSortTypeChange(SortType.DEFAULT);
       boardController.createTask();
       break;
     case MenuItem.STATISTICS:
@@ -54,7 +50,6 @@ siteMenuComponent.setOnChange((menuItem) => {
     case MenuItem.TASKS:
       statisticsComponent.hide();
       boardController.show();
-      boardController.onSortTypeChange(SortType.DEFAULT);
       break;
   }
 });
